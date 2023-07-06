@@ -15,21 +15,10 @@ namespace LavaBot {
         public async Task MainAsync() {
             // load .env
             DotEnv.Load(".env");
-
-            // get config data
-            string? token = Environment.GetEnvironmentVariable("TOEKN");
-            DiscordSocketConfig cfg = new DiscordSocketConfig {
-                GatewayIntents = GatewayIntents.All
-            };
-
-            if (token == null) return;
-            
             // create config
-            Config config = new Config(token, cfg);
-
+            Config config = new Config();
             // entry app
             await this.StartApp(config);
-
             // dont complete this task
             await Task.Delay(-1);
         }
@@ -46,8 +35,13 @@ namespace LavaBot {
         }
 
         private void InitEvent() {
-            if (client != null)
+            if (client != null) {
                 client.Log += Events.Log;
+                client.Ready += () => {
+                    Events.Ready(this.client);
+                    return Task.CompletedTask;
+                };
+            }
         }
     }
 }

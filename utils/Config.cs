@@ -1,4 +1,5 @@
 using Discord.WebSocket;
+using Discord;
 
 namespace LavaBot.utils {
 
@@ -7,9 +8,12 @@ namespace LavaBot.utils {
         public string? Token { get; set; }
         public DiscordSocketConfig? ClientConfig { get; set; }
 
-        public Config(string? token, DiscordSocketConfig? cfg) {
-            Token = token;
-            ClientConfig = cfg;
+        public Config() {
+            Token = Environment.GetEnvironmentVariable("TOEKN");
+            ClientConfig = new DiscordSocketConfig {
+                GatewayIntents = GatewayIntents.All
+            };
         }
+
     }
 }
