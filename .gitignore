@@ -1,0 +1,19 @@
+# dirs
+.vscode/
+.idea/
+
+# other files
+.env
+
+# build
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# pkg
+*.nupkg
