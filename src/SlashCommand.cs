@@ -1,7 +1,5 @@
 using Discord;
 using Discord.WebSocket;
-using Discord.Interactions;
-using LavaBot.src;
 
 namespace LavaBot.src
 {
@@ -12,6 +10,7 @@ namespace LavaBot.src
 
             // commands
             appCommandProperties.Add(commands.Test.Build());
+            appCommandProperties.Add(commands.Weather.Build());
 
             // bulk register
             await client.BulkOverwriteGlobalApplicationCommandsAsync(appCommandProperties.ToArray());

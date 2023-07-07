@@ -37,6 +37,7 @@ namespace LavaBot {
         private void InitEvent() {
             if (client != null) {
                 client.Log += Events.Log;
+                client.SlashCommandExecuted += Events.SlashCommandHandler;
                 client.Ready += () => {
                     Events.Ready(this.client);
                     return Task.CompletedTask;
