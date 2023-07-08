@@ -27,18 +27,22 @@ namespace LavaBot.src.commands.weather {
         /* logic command */
 
         public static async Task Execute(SocketSlashCommand command) {
-            var options = command.Data.Options.ToArray();
-            var isEphemeral = (bool)options[2].Value;
+            try {
+                var options = command.Data.Options.ToArray();
+                var isEphemeral = (bool)options[2].Value;
 
-            await command.DeferAsync(ephemeral: isEphemeral);
+                await command.DeferAsync(ephemeral: isEphemeral);
 
-            var country = (string)options[0].Value;
-            var city = (string)options[1].Value;
+                var country = (string)options[0].Value;
+                var city = (string)options[1].Value;
 
-            api.WeatherObject? weatherData = await api.OpenWeather.GetWeatherByCity(city);
-            Embed weatherEmbed = misc.EmbedsBuilder.WeatherEmbed(weatherData);
+                api.WeatherObject? weatherData = await api.OpenWeather.GetWeatherByCity(city);
+                Embed weatherEmbed = misc.EmbedsBuilder.WeatherEmbed(weatherData);
 
-            await command.FollowupAsync(embed: weatherEmbed);
+                await command.FollowupAsync(embed: weatherEmbed);
+            } catch (System.Exception) {
+                await command.FollowupAsync("Handled error in Weather -> Logic -> Execute");
+            }
         }
 
         public static async Task Autocomplete(SocketAutocompleteInteraction interaction) {
@@ -77,8 +81,6 @@ namespace LavaBot.src.commands.weather {
             } else {
                 string fileName = "data/weather/cities.json";
                 string jsonString = File.ReadAllText(fileName);
-
-                Console.WriteLine(countryInput);
 
                 var filterCities = JsonSerializer.Deserialize<IList<City>>(jsonString)
                     .Where(el => el.name.StartsWith(input, StringComparison.InvariantCultureIgnoreCase) && el.country_name.ToLower() == countryInput)
