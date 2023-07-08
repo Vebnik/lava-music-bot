@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using Discord.Interactions;
 using Discord;
 using LavaBot.utils;
 using LavaBot.src;
@@ -36,11 +37,17 @@ namespace LavaBot {
 
         private void InitEvent() {
             if (client != null) {
-                client.Log += Events.Log;
+                // logging 
+                client.Log += Events.Log;                
+                // slash command interaction
                 client.SlashCommandExecuted += Events.SlashCommandHandler;
-                client.Ready += () => {
-                    Events.Ready(this.client);
-                    return Task.CompletedTask;
+                // on ready posy logic
+                client.Ready += async () => {
+                    await Events.Ready(this.client);
+                };
+                // on slash command autocomplete
+                client.AutocompleteExecuted += async (SocketAutocompleteInteraction arg) => {
+                    await Events.AutocompleteHandler(arg, this.client);
                 };
             }
         }

@@ -1,5 +1,6 @@
 using Discord;
 using Discord.WebSocket;
+using Discord.Interactions;
 
 namespace LavaBot.src {
 
@@ -9,24 +10,34 @@ namespace LavaBot.src {
             return Task.CompletedTask;
         }
 
-        public static Task Ready(DiscordSocketClient client) {
-            SlashCommand.GlobalRegister(client);
-            return Task.CompletedTask;
+        public static async Task Ready(DiscordSocketClient client) {
+            await SlashCommand.GlobalRegister(client);
+            await Task.CompletedTask;
         }
 
         public static async Task SlashCommandHandler(SocketSlashCommand command) {
 
             switch (command.CommandName) {
                 case("weather"):
-                    await api.OpenWeather.GetWeatherByCity("Irkutsk");
-                    await command.RespondAsync("Weather", embed: misc.EmbedsBuilder.WeatherEmbed());
-                    break;
+                    await commands.weather.Logic.Execute(command); break;
                 default:
-                    await command.RespondAsync("Not found right handler");
-                    break;
+                    await command.RespondAsync("Not found right handler"); break;
             }
 
             await Task.CompletedTask;
+        }
+
+        public static async Task AutocompleteHandler (SocketAutocompleteInteraction arg, DiscordSocketClient client) {
+            var ctx = new InteractionContext(client, arg, arg.Channel);
+            var interaction = (ctx.Interaction as SocketAutocompleteInteraction);
+            var commandName = interaction.Data.CommandName;
+
+            switch (commandName) {
+                case("weather"):
+                    await commands.weather.Logic.Autocomplete(interaction); break;
+                default:
+                    break;
+            }
         }
     }
 }
